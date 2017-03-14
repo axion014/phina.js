@@ -148,6 +148,17 @@ phina.namespace(function() {
 
         return rst;
       };
+			/*
+			 * https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Lexical_grammar#Reserved_word_usage
+			 * なので super 名のプロパティは使用できる
+			 * この実装による実行コストの増大はとても僅か
+			 */
+			_class.prototype.super = {};
+			params.superClass.prototype.forIn(function(name, method) {
+				if (typeof method == 'function') _class.prototype.super[name] = method.bind(this);
+				// else if (name == 'super') _class.prototype.super.super = method;
+			});
+			
       _class.prototype.constructor = _class;
     }
 
