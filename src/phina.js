@@ -128,42 +128,33 @@ phina.namespace(function() {
       _class.prototype.superInit = function() {
         this.__counter = this.__counter || 0;
 
-        var superClass = this._hierarchies[this.__counter++];
-        var superInit = superClass.prototype.init;
-        superInit.apply(this, arguments);
+        this._hierarchies[this.__counter++].prototype.init.apply(this, arguments);
 
-        this.__counter = 0;
+        this.__counter = undefined;
       };
+			// 後方互換ってやつ
       _class.prototype.superMethod = function() {
         var args = Array.prototype.slice.call(arguments, 0);
         var name = args.shift();
-        this.__counters = this.__counters || {};
-        this.__counters[name] = this.__counters[name] || 0;
 
-        var superClass = this._hierarchies[ this.__counters[name]++ ];
-        var superMethod = superClass.prototype[name];
-        var rst = superMethod.apply(this, args);
-
-        this.__counters[name] = 0;
-
-        return rst;
+        return this.super[name](args);
       };
 			/*
 			 * https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Lexical_grammar#Reserved_word_usage
 			 * なので super 名のプロパティは使用できる
-			 * この実装による実行コストの増大はとても僅か
+			 * この実装による実行コストの増大はとても僅か(define はあっちゅう間に終わる)
 			 */
 			_class.prototype.super = {};
 			params.superClass.prototype.forIn(function(name, method) {
-				if (typeof method == 'function') _class.prototype.super[name] = method.bind(this);
-				// else if (name == 'super') _class.prototype.super.super = method;
+				if (typeof method === 'function') _class.prototype.super[name] = method.bind(this);
+				else if (name === 'super') _class.prototype.super.super = method;
 			});
-			
+
       _class.prototype.constructor = _class;
     }
 
 
-    // // 
+    // //
     // params.forIn(function(key, value) {
     //   if (typeof value === 'function') {
     //     _class.$method(key, value);
