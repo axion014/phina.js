@@ -42,3 +42,87 @@
 <script src='src/geom/index.js'></script>
 
 <script src='src/app/index.js'></script>
+
+<script>
+describe('#Other', function() {
+	var Super = phina.createClass({
+		field: 'Super1',
+		fieldwillOverrided: 'Super2',
+		init: function() {
+			this.initfield = 'inited';
+		},
+		method: function() {
+			return 'Supermethod1';
+		},
+		shouldreturnsuperold: function() {
+			return 'theSuper';
+		},
+		shouldreturnsupernew: function() {
+			return 'theSuper';
+		},
+		methodwillOverrided: function() {
+			return 'Supermethod2';
+		},
+		checkfield: function() {
+			return this.fieldwillOverrided === 'newSub';
+		}
+	});
+	var Sub = phina.createClass({
+		superClass: Super,
+		fieldwillOverrided: 'Sub',
+		init: function() {
+			this.superInit();
+		},
+		methodwillOverrided: function() {
+			return 'Submethod';
+		},
+		shouldreturnsuperold: function() {
+			return this.superMethod('shouldreturnsuperold');
+		},
+		shouldreturnsupernew: function() {
+			return this.super.shouldreturnsupernew();
+		}
+	});
+	var SubofSub = phina.createClass({
+		superClass: Sub,
+		init: function() {
+			this.superInit();
+		},
+		shouldreturnsuperold: function() {
+			return this.superMethod('shouldreturnsuperold');
+		},
+		shouldreturnsupernew: function() {
+			return this.super.shouldreturnsupernew();
+		},
+		methodwillOverrided: function() {
+			return 'SubofSubmethod';
+		}
+	});
+
+	it('extend', function() {
+		assert.equal(Sub().initfield, 'inited');
+    assert.equal(Sub().field, Super().field);
+		assert.equal(Sub().method(), Super().method());
+		assert.equal(Sub().fieldwillOverrided, 'Sub');
+		assert.equal(Sub().methodwillOverrided(), 'Submethod');
+		var instance = Sub();
+		instance.fieldwillOverrided = 'newSub';
+		assert(instance.checkfield());
+  });
+
+  it('oldsuper', function() {
+		assert.equal(Sub().superMethod('methodwillOverrided'), 'Supermethod2');
+		assert.equal(SubofSub().shouldreturnsuperold(), 'theSuper');
+		assert.equal(SubofSub().superMethod('methodwillOverrided'), 'Submethod');
+		assert.equal(SubofSub().superMethod('superMethod', 'methodwillOverrided'), 'Supermethod2');
+  });
+
+  it('newsuper', function() {
+		assert.equal(Sub().super.methodwillOverrided(), 'Supermethod2');
+		assert.equal(SubofSub().shouldreturnsupernew(), 'theSuper');
+		assert.equal(SubofSub().super.methodwillOverrided(), 'Submethod');
+		assert.equal(SubofSub().super.super.methodwillOverrided(), 'Supermethod2'); // 要らない気もする
+  });
+
+});
+</script>
