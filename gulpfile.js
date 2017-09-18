@@ -9,6 +9,8 @@ requireDir('./gulp/tasks', {recurse: true});
 
 var config = require('./gulp/config');
 
+var runSequence = require('run-sequence');
+
 // watch
 gulp.task('watch', function() {
   config.watch.target.forEach(function(task) {
@@ -17,4 +19,4 @@ gulp.task('watch', function() {
 });
 
 // default tasks
-gulp.task('default', ['build', 'uglify', 'watch']);
+gulp.task('default', function(cb) {return runSequence('build', 'uglify', 'watch', cb)});

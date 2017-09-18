@@ -1,8 +1,8 @@
 {
   "name": "phina.js",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "javascript library for game programming.",
-  "homepage": "http://tmlife.io",
+  "homepage": "http://phinajs.com",
   "main": [
     "build/phina.js",
     "build/phina.min.js"

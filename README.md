@@ -16,7 +16,7 @@ http://phinajs.com
 **Browser**
 
 ```html
-<script src='https://rawgit.com/phi-jp/phina.js/v0.1.2/build/phina.js'></script>
+<script src='https://cdn.rawgit.com/phi-jp/phina.js/v0.2.0/build/phina.js'></script>
 <script>
 phina.main(function() {
   console.log(phina.VERSION) // show version
@@ -33,7 +33,7 @@ console.log(phina.VERSION) // show version
 
 **Runstant**
 
-[Getting started](http://goo.gl/xgyU6f)
+[Getting started](http://runstant.com/phi/projects/phinajs_template)
 
 
 
