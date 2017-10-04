@@ -510,13 +510,18 @@ phina.namespace(function() {
       var half_radius = radius*0.5;
       var rad = (angle === undefined) ? Math.PI/4 : Math.degToRad(angle);
 
-      // 半径 half_radius の角度 angle 上の点との接線を求める
-      var p = Math.cos(rad)*half_radius;
-      var q = Math.sin(rad)*half_radius;
+      /* 半径 half_radius の角度 angle 上の点との接線を求める
+       * 円の接線の方程式 px + qy = r^2 より y = (r^2-px)/q
+       *
+       * var p = Math.cos(rad)*half_radius;
+       * var q = Math.sin(rad)*half_radius;
+       * var x2 = -half_radius;
+       * var y2 = (half_radius*half_radius-p*x2)/q;
+       *
+       * below code is optimized
+       */
 
-      // 円の接線の方程式 px + qy = r^2 より y = (r^2-px)/q
-      var x2 = -half_radius;
-      var y2 = (half_radius*half_radius-p*x2)/q;
+      var y2 = (Math.cos(rad)+1)*half_radius/Math.sin(rad);
 
       // 中心位置調整
       var height = y2 + half_radius;
