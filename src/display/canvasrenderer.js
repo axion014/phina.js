@@ -11,9 +11,10 @@ phina.namespace(function() {
       this._context = this.canvas.context;
     },
     render: function(scene) {
-      this.canvas.clear();
       if (scene.backgroundColor) {
         this.canvas.clearColor(scene.backgroundColor);
+      } else {
+        this.canvas.clear();
       }
 
       this._context.save();
@@ -62,10 +63,10 @@ phina.namespace(function() {
 
         // 子供たちも実行
         if (obj.renderChildBySelf === false && obj.children.length > 0) {
-            var tempChildren = obj.children.slice();
-            for (var i=0,len=tempChildren.length; i<len; ++i) {
-                this.renderObject(tempChildren[i]);
-            }
+          var tempChildren = obj.children.slice();
+          for (var i=0,len=tempChildren.length; i<len; ++i) {
+            this.renderObject(tempChildren[i]);
+          }
         }
 
         context.restore();
