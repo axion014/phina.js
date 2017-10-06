@@ -5931,7 +5931,7 @@ phina.namespace(function() {
 
   var MATCH_SET_LIST = {
     "hex111": {
-      reg: /^#(\w{1})(\w{1})(\w{1})$/,
+      reg: /^#(\w)(\w)(\w)$/,
       exec: function(m) {
         return [
           parseInt(m[1] + m[1], 16),
@@ -5961,7 +5961,7 @@ phina.namespace(function() {
       }
     },
     "rgba": {
-      reg: /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1}(\.{1}\d+)?)\)$/,
+      reg: /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d(\.\d+)?)\)$/,
       exec: function(m) {
         return [
           parseInt(m[1]),
@@ -5978,11 +5978,12 @@ phina.namespace(function() {
       }
     },
     "hsla": {
-      reg: /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1}(\.{1}\d+)?)\)$/,
+      reg: /^hsla\((\d{1,3}),\s*(\d{1,3})%,\s*(\d{1,3})%,\s*(\d(\.\d+)?)\)$/,
       exec: function(m) {
-        return phina.util.Color.HSLAtoRGBA(m[1], m[2], m[3], m[4]);
+        return phina.util.Color.HSLAtoRGBA(m[1], m[2], m[3], parseFloat(m[4]));
       },
     }
+    //各引数と全体の前後、全てに\s*(ホワイトスペース)を想定するのはオーバーか？
   };
 
 });
