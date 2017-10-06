@@ -4,10 +4,22 @@ describe('#util', function() {
   describe('Color', function() {
     it('init', function() {
       var color = phina.util.Color(255, 0, 0);
+      assert(color.r === 255 && color.g === 0 && color.b === 0 && color.a === 1);
+    });
 
-      console.log(color.toString());
+    it('stringToNumber', function() {
+      assert(phina.util.Color.stringToNumber("#123456").equals([0x12, 0x34, 0x56]));
+      assert(phina.util.Color.stringToNumber("rgb(123, 45, 6)").equals([123, 45, 6]));
+      assert(phina.util.Color.stringToNumber("rgba(123, 45, 6, 0.7)").equals([123, 45, 6, 0.7]));
+      assert(phina.util.Color.stringToNumber("#123").equals([0x11, 0x22, 0x33]));
+      assert(phina.util.Color.stringToNumber("hsl(120, 100%, 50%)").equals([0, 255, 0]));
+      assert(phina.util.Color.stringToNumber("hsla(0, 0%, 75%, 0.5)").equals([191, 191, 191, 0.5]));
+    });
 
-      assert(color.toString())
+    it('toStyle', function() {
+      assert.equal(phina.util.Color(0, 255, 0).toStyleAsHex(), "#00ff00");
+      assert.equal(phina.util.Color(0, 0, 255).toStyleAsRGB(), "rgb(0,0,255)"); //スペースなし
+      assert.equal(phina.util.Color(135, 79, 11, 0.3).toStyleAsRGBA(), "rgba(135,79,11,0.3)");
     });
   });
 
@@ -35,9 +47,9 @@ describe('#util', function() {
     it('stringify', function() {
       var str = phina.util.QueryString.stringify({"hoge":"100", "foo":"bar"});
       assert.equal(str, 'hoge=100&foo=bar');
-      var str = phina.util.QueryString.stringify({"2":"4","4":"2"}, '|', '*'); 
+      var str = phina.util.QueryString.stringify({"2":"4","4":"2"}, '|', '*');
       assert.equal(str, '2*4|4*2');
-      var str = phina.util.QueryString.stringify({"名前":"ファイ"}, null, null, true); 
+      var str = phina.util.QueryString.stringify({"名前":"ファイ"}, null, null, true);
       assert.equal(str, '名前=%E3%83%95%E3%82%A1%E3%82%A4');
     });
   });
