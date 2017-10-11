@@ -162,13 +162,16 @@ phina.namespace(function() {
     },
 
     _loop: function() {
+      // stats update
+      if (this.stats) this.stats.begin();
+
       this._update();
       this._draw();
 
       this.interactive.check(this.currentScene);
 
       // stats update
-      if (this.stats) this.stats.update();
+      if (this.stats) this.stats.end();
     },
 
     _update: function() {
