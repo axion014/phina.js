@@ -187,7 +187,8 @@ phina.namespace(function() {
         var type = null;
 
         if (str[0] === '#') {
-          type = (str.length == 4) ? "hex111" : "hex222";
+          if (str.length < 6) type = (str.length == 4) ? "hex111" : "hex1111";
+          else type = (str.length == 7) ? "hex222" : "hex2222";
         } else if (str[0] === 'r' && str[1] === 'g' && str[2] === 'b') {
           type = (str[3] == 'a') ? "rgba" : "rgb";
         } else if (str[0] === 'h' && str[1] === 's' && str[2] === 'l') {
@@ -328,6 +329,17 @@ phina.namespace(function() {
         ];
       }
     },
+    "hex1111": {
+      reg: /^#(\w)(\w)(\w)(\w)$/,
+      exec: function(m) {
+        return [
+          parseInt(m[1] + m[1], 16),
+          parseInt(m[2] + m[2], 16),
+          parseInt(m[3] + m[3], 16),
+          parseInt(m[4] + m[4], 16) / 255
+        ];
+      }
+    },
     "hex222": {
       reg: /^#(\w{2})(\w{2})(\w{2})$/,
       exec: function(m) {
@@ -335,6 +347,17 @@ phina.namespace(function() {
           parseInt(m[1], 16),
           parseInt(m[2], 16),
           parseInt(m[3], 16)
+        ];
+      }
+    },
+    "hex2222": {
+      reg: /^#(\w{2})(\w{2})(\w{2})(\w{2})$/,
+      exec: function(m) {
+        return [
+          parseInt(m[1], 16),
+          parseInt(m[2], 16),
+          parseInt(m[3], 16),
+          parseInt(m[4], 16) / 255
         ];
       }
     },
