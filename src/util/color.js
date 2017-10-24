@@ -47,6 +47,13 @@ phina.namespace(function() {
       return this;
     },
 
+    setFromANumber: function(c) {
+      this.r = (c >> 16) % 256;
+      this.g = (c >> 8) % 256;
+      this.b = c % 256;
+      return this;
+    },
+
     /**
      * 配列によるセッター
      */
