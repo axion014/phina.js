@@ -20,7 +20,7 @@
    * Objectの拡張
    */
 
-  
+
   /**
    * @method property
    * 変数を追加
@@ -170,8 +170,8 @@
     }, this);
     return this;
   });
-  
-  
+
+
   /**
    * @method  $strict
    * 厳格拡張
@@ -180,7 +180,7 @@
   Object.prototype.$method("$strict", function(source) {
     Array.prototype.forEach.call(arguments, function(source) {
       for (var property in source) {
-        console.assert(!this[property], "tm error: {0} is Already".format(property));
+        console.assert(!this[property], "phina error: {0} is Already".format(property));
         this[property] = source[property];
       }
     }, this);
@@ -294,7 +294,7 @@
         var tempKey = '__' + key;
         var tempValue = obj[key];
         obj[tempKey] = tempValue;
-        
+
         obj.accessor(key, {
           get: function() {
             return this[tempKey];
@@ -315,8 +315,6 @@
   }
 
 })();
-
-
 
 /*
  * number.js
@@ -4754,10 +4752,14 @@ phina.namespace(function() {
      */
     off: function(type, listener) {
       var listeners = this._listeners[type];
-      var index = listeners.indexOf(listener);
-      if (index != -1) {
-        listeners.splice(index,1);
+
+      if (listeners) {
+        var index = listeners.indexOf(listener);
+        if (index != -1) {
+          listeners.splice(index,1);
+        }
       }
+
       return this;
     },
 
@@ -13213,10 +13215,9 @@ phina.namespace(function() {
       this._context = this.canvas.context;
     },
     render: function(scene) {
+      this.canvas.clear();
       if (scene.backgroundColor) {
         this.canvas.clearColor(scene.backgroundColor);
-      } else {
-        this.canvas.clear();
       }
 
       this._context.save();
