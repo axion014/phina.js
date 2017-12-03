@@ -66,10 +66,14 @@ phina.namespace(function() {
      */
     off: function(type, listener) {
       var listeners = this._listeners[type];
-      var index = listeners.indexOf(listener);
-      if (index != -1) {
-        listeners.splice(index,1);
+
+      if (listeners) {
+        var index = listeners.indexOf(listener);
+        if (index != -1) {
+          listeners.splice(index,1);
+        }
       }
+
       return this;
     },
 
