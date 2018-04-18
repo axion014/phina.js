@@ -96,6 +96,17 @@ phina.namespace(function() {
         this.currentScene.flare('blur');
       }.bind(this), false);
 
+      // ウィンドウリサイズ時イベントリスナを登録
+      var running = false;
+      phina.global.addEventListener('resize', function() {
+        if (running) return;
+        running = true;
+        phina.global.setTimeout(function() { //最大60FPSでイベント発行
+          this.flare('resize');
+          running = false;
+        }.bind(this), 16);
+      }.bind(this), false);
+
       // 更新関数を登録
       this.on('enterframe', function() {
         this.mouse.update();
