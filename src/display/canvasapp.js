@@ -32,6 +32,7 @@ phina.namespace(function() {
       });
 
       this.canvas = phina.graphics.Canvas(this.domElement);
+      this.canvas._isapp = true;
       this.canvas.setSize(this.width, this.height);
 
       this.backgroundColor = (options.backgroundColor !== undefined) ? options.backgroundColor : 'white';

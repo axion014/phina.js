@@ -1,6 +1,9 @@
 
 phina.namespace(function() {
 
+  //var theKey = {};
+  var olddevicePixelRatio = phina.global.devicePixelRatio;
+
   /**
    * @class phina.graphics.Canvas
    * キャンバス拡張クラス
@@ -26,22 +29,38 @@ phina.namespace(function() {
       this.context.lineCap = 'round';
       this.context.lineJoin = 'round';
       this.resetTransform();
+
+      //phina.graphics.Canvas._canvases.push(new WeakMap([[theKey, this]]));
+      var self = this;
+      var running = false;
+      phina.global.addEventListener('resize', function() {
+        if (running) return;
+        running = true;
+        phina.global.setTimeout(function() {
+          self.canvas.width = self.width * phina.global.devicePixelRatio;
+          self.canvas.height = self.height * phina.global.devicePixelRatio;
+          running = false;
+        }, 16);
+      });
     },
 
     /**
      * サイズをセット
      */
     setSize: function(width, height) {
-      this._originalRate = height / width;
-      this._setSize(width, height);
-      return this;
-    },
+      this._width = width;
+      this._height = height;
 
-    _setSize: function(width, height) {
-      this.domElement.style.width = width + "px";
-      this.domElement.style.height = height + "px";
-      this.canvas.width  = width * window.devicePixelRatio;
+      if (this._isapp) {
+        this.domElement.style.width = width + "px";
+        this.domElement.style.height = height + "px";
+      }
+
+      this.canvas.width = width * window.devicePixelRatio;
       this.canvas.height = height * window.devicePixelRatio;
+
+      this._originalRate = height / width;
+      return this;
     },
 
     setSizeToScreen: function() {
@@ -68,11 +87,18 @@ phina.namespace(function() {
         s.right = "0";
 
         if (window.innerHeight / window.innerWidth > this._originalRate) {
-          this._setSize(Math.floor(window.innerWidth), Math.floor(window.innerWidth*this._originalRate));
+          var w = Math.floor(window.innerWidth);
+          var h = Math.floor(window.innerWidth*this._originalRate);
         }
         else {
-          this._setSize(Math.floor(window.innerHeight/this._originalRate), Math.floor(window.innerHeight));
+          var w = Math.floor(window.innerHeight/this._originalRate);
+          var h = Math.floor(window.innerHeight);
         }
+
+        this._width = w;
+        this.canvas.width = w * window.devicePixelRatio;
+        this._height = h;
+        this.canvas.height = h * window.devicePixelRatio;
       }.bind(this);
 
       // 一度実行しておく
@@ -677,16 +703,26 @@ phina.namespace(function() {
        * 幅
        */
       width: {
-        "get": function()   { return this.canvas.width / window.devicePixelRatio; },
-        "set": function(v)  { this.canvas.width = v * window.devicePixelRatio; }
+        "get": function()   { return this._width; },
+        "set": function(v)  {
+          this._width = v;
+          this._originalRate = this._height / v;
+          if (this._isapp) this.domElement.style.width = v + "px";
+          this.canvas.width = v * window.devicePixelRatio;
+        }
       },
 
       /**
        * 高さ
        */
       height: {
-        "get": function()   { return this.canvas.height / window.devicePixelRatio; },
-        "set": function(v)  { this.canvas.height = v * window.devicePixelRatio; }
+        "get": function()   { return this._height; },
+        "set": function(v)  {
+          this._height = v;
+          this._originalRate = v / this._width;
+          if (this._isapp) this.domElement.style.height = v + "px";
+          this.canvas.height = v * window.devicePixelRatio;
+        }
       },
 
       fillStyle: {
@@ -796,6 +832,32 @@ phina.namespace(function() {
       createRadialGradient: function() {
         return this._context.createRadialGradient.apply(this._context, arguments);
       },
+
+      //_canvases: []
     },
   });
+
+  /* リスナーを減らして高速化作戦
+
+  phina.global.addEventListener('resize', function() {
+    if (phina.global.devicePixelRatio === olddevicePixelRatio) return;
+    phina.graphics.Canvas._canvases.each(function(ref) {
+      var canvas = ref.get(theKey);
+      canvas.canvas.width = canvas.width * phina.global.devicePixelRatio;
+      canvas.canvas.height = canvas.height * phina.global.devicePixelRatio;
+    });
+    olddevicePixelRatio = phina.global.devicePixelRatio;
+  });
+
+  var ticker = phina.util.Ticker();
+  ticker.fps = 0.3;
+  ticker.tick(function() {
+    for (var i = 0; i < phina.graphics.Canvas._canvases.length;) {
+      if (phina.graphics.Canvas._canvases[i].has(theKey)) {
+        i++;
+      } else {
+        phina.graphics.Canvas._canvases.splice(i, 1);
+      }
+    }
+  });*/
 });

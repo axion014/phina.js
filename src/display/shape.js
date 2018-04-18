@@ -47,6 +47,18 @@ phina.namespace(function() {
 
       this.on('enterframe', checkRender);
       this.on('added', checkRender);
+
+      var self = this;
+      var running = false;
+
+      phina.global.addEventListener('resize', function() {
+        if (running) return;
+        running = true;
+        phina.global.setTimeout(function() {
+          self._dirtyDraw = true;
+          running = false;
+        }, 16);
+      });
     },
 
     calcCanvasWidth: function() {
